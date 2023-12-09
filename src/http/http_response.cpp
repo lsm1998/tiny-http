@@ -3,3 +3,8 @@
 //
 
 #include "http_response.h"
+
+HttpResponse::HttpResponse(int fd)
+{
+    this->fd = fd;
+}

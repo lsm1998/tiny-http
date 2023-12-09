@@ -5,14 +5,15 @@
 #ifndef TINY_HTTP_CORE_H
 #define TINY_HTTP_CORE_H
 
-#include <utility>
-
-#include "gloab.h"
+#include "global.h"
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 constexpr char *DEFAULT_HOST = (char *) "127.0.0.1";
 constexpr int DEFAULT_PORT = 8080;
 constexpr bool DEFAULT_BLOCK = true;
-constexpr int DEFAULT_LISTEN_SIZE = 1024;
+constexpr int DEFAULT_BACKLOG = 1024;
 
 class TinyHttpServer
 {
@@ -25,11 +26,11 @@ public:
     {}
 
     explicit TinyHttpServer(std::string host, int port, bool block) :
-            TinyHttpServer(std::move(host), port, block, DEFAULT_LISTEN_SIZE)
+            TinyHttpServer(std::move(host), port, block, DEFAULT_BACKLOG)
     {}
 
-    explicit TinyHttpServer(std::string host, int port, bool block, int listenSize)
-            : host(std::move(host)), port(port), block(block), listenSize(listenSize)
+    explicit TinyHttpServer(std::string host, int port, bool block, int backlog)
+            : host(std::move(host)), port(port), block(block), backlog(backlog)
     {}
 
 public:
@@ -42,10 +43,21 @@ public:
     void run();
 
 private:
+    void setServerAddr();
+
+    void bind();
+
+    void listen() const;
+
+    void accept() const;
+
+private:
     std::string host;
     int port;
     bool block;
-    int listenSize;
+    int backlog;
+    int fd;
+    struct sockaddr_in server_addr{};
 };
 
 #endif //TINY_HTTP_CORE_H

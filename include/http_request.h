@@ -5,7 +5,7 @@
 #ifndef TINY_HTTP_HTTP_REQUEST_H
 #define TINY_HTTP_HTTP_REQUEST_H
 
-#include "gloab.h"
+#include "global.h"
 #include <map>
 
 class HttpRequest
@@ -17,9 +17,13 @@ class HttpRequest
     using FormData = std::map<String, std::vector<String>>;
 
 public:
-    explicit HttpRequest(int fd) : fd(fd){};
+    explicit HttpRequest(int fd);
 
     ~HttpRequest();
+
+    HttpRequest(const HttpRequest& request);
+
+    String getPath() const;
 
 private:
     bool invalid{};
@@ -31,6 +35,8 @@ private:
     String version{};
 
     char *body{};
+
+    int length{};
 
     HttpHeader header{};
 

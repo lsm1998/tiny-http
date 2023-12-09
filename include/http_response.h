@@ -5,7 +5,7 @@
 #ifndef TINY_HTTP_HTTP_RESPONSE_H
 #define TINY_HTTP_HTTP_RESPONSE_H
 
-#include "gloab.h"
+#include "global.h"
 #include <map>
 
 // 101: "Protocols",
@@ -23,7 +23,11 @@ const std::map<int, std::string> CODE_MAP = {
 
 class HttpResponse
 {
+public:
+    explicit HttpResponse(int fd);
 
+private:
+    int fd;
 };
 
 #endif //TINY_HTTP_HTTP_RESPONSE_H
