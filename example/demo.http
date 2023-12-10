@@ -1,0 +1,3 @@
+GET http://127.0.0.1/hello?name=1235_b
+Accept: application/json
+

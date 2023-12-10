@@ -4,8 +4,6 @@
 
 #include "core.h"
 #include "tcp_net_util.h"
-#include "http_request.h"
-#include "http_response.h"
 #include "handler.h"
 
 void TinyHttpServer::run()
@@ -42,6 +40,7 @@ void TinyHttpServer::setServerAddr()
 {
     if ((this->fd = ::socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
+        perror("reason");
         throw std::runtime_error("setServerAddr fail");
     }
     memset(&this->server_addr, 0, sizeof(struct sockaddr_in));
@@ -52,8 +51,16 @@ void TinyHttpServer::setServerAddr()
 
 void TinyHttpServer::bind()
 {
+    int optval = 1;
+    if (this->reuseaddr && setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1)
+    {
+        perror("reason");
+        throw std::runtime_error("setsockopt fail");
+    }
+
     if (::bind(this->fd, (struct sockaddr *) &this->server_addr, sizeof(this->server_addr)) < 0)
     {
+        perror("reason");
         throw std::runtime_error("bind fail");
     }
 }
@@ -63,6 +70,7 @@ void TinyHttpServer::listen() const
     // 监听
     if (::listen(this->fd, this->backlog) < 0)
     {
+        perror("reason");
         throw std::runtime_error("listen fail");
     }
 }

@@ -6,7 +6,8 @@
 #define TINY_HTTP_HTTP_REQUEST_H
 
 #include "global.h"
-#include <map>
+#include "tcp_net_util.h"
+#include "string_util.h"
 
 class HttpRequest
 {
@@ -14,40 +15,64 @@ class HttpRequest
 
     using HttpHeader = std::map<String, std::vector<String>>;
 
-    using FormData = std::map<String, std::vector<String>>;
+    using FormData = HttpHeader;
 
 public:
     explicit HttpRequest(int fd);
 
     ~HttpRequest();
 
-    HttpRequest(const HttpRequest& request);
+    HttpRequest(const HttpRequest &request);
 
-    String getPath() const;
+    [[nodiscard]] String path() const;
+
+    [[nodiscard]] String method() const;
+
+    [[nodiscard]] bool isInvalid() const;
+
+    [[nodiscard]] String protocol() const;
+
+    [[nodiscard]] String version() const;
+
+    [[nodiscard]] std::vector<String> header(const String &key) const;
+
+    [[nodiscard]] HttpHeader headers() const;
+
+    [[nodiscard]] std::vector<String> query(const String &key) const;
+
+    [[nodiscard]] FormData queryMap() const;
 
 private:
-    bool invalid{};
+    void parseRequestLine();
 
-    String method{};
+    void parseRequestHeader();
 
-    String path{};
+    void parseQuery();
 
-    String version{};
+private:
+    bool _invalid{};
+
+    String _method{};
+
+    String _path{};
+
+    String _protocol{};
+
+    String _version{};
 
     char *body{};
 
     int length{};
 
-    HttpHeader header{};
+    HttpHeader _header{};
 
-    FormData query{};
+    FormData _query{};
 
     FormData form{};
 
     int fd{};
 
-private:
-
+    String queryRow;
 };
 
 #endif //TINY_HTTP_HTTP_REQUEST_H

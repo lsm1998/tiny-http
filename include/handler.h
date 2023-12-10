@@ -12,6 +12,8 @@ class ClientArgs
 public:
     int fd{};
     struct sockaddr_in client_addr{};
+
+    ~ClientArgs();
 };
 
 extern void *handler(void *args);

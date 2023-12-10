@@ -28,3 +28,24 @@ int netSetBlock(int fd, int non_block)
     }
     return 0;
 }
+
+size_t readUntilDelimiter(int fd, char delimiter, char *buf, ssize_t len)
+{
+    char c;
+    size_t result = FAIL;
+    for (ssize_t i = 0; i < len; i++)
+    {
+        ssize_t offset = read(fd, &c, 1);
+        if (offset < 0)
+        {
+            break;
+        }
+        buf[i] = c;
+        if (c == delimiter)
+        {
+            result = i + 1;
+            break;
+        }
+    }
+    return result;
+}

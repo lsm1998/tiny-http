@@ -5,9 +5,11 @@
 #ifndef TINY_HTTP_TCP_NET_UTIL_CPP_H
 #define TINY_HTTP_TCP_NET_UTIL_CPP_H
 
+#include "global.h"
 #include <fcntl.h>
-#include <iostream>
 
 extern int netSetBlock(int fd, int non_block);
+
+extern size_t readUntilDelimiter(int fd, char delimiter, char *buf, ssize_t len);
 
 #endif //TINY_HTTP_TCP_NET_UTIL_CPP_H

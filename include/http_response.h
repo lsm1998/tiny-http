@@ -13,21 +13,40 @@ constexpr const char *VERSION = "HTTP/1.1";
 
 constexpr const char *BLANK = " ";
 
-const std::map<int, std::string> CODE_MAP = {
-        {101, "Protocols"},
-        {200, "OK"},
-        {400, "Bad Request"},
-        {404, "Not Found"},
-        {500, "Internal Server Error"},
-};
+extern const std::map<int, std::string> CODE_MAP;
 
 class HttpResponse
 {
 public:
     explicit HttpResponse(int fd);
 
+    ~HttpResponse();
+
+    void setHeader(const std::string &key, const std::string &value);
+
+    void write(const char *data, size_t len);
+
+    void setStatusCode(int code);
+
 private:
-    int fd;
+    void writeWithKV(const std::string &key, const std::string &value) const;
+
+    void writeRespLine() const;
+
+    void writeRespHeader() const;
+
+    void writeRespBody() const;
+
+    void done() const;
+
+private:
+    int fd{};
+
+    int _code{200};
+
+    std::stringstream buf{};
+
+    std::map<std::string, std::string> header{};
 };
 
 #endif //TINY_HTTP_HTTP_RESPONSE_H

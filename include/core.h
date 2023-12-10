@@ -14,6 +14,7 @@ constexpr char *DEFAULT_HOST = (char *) "127.0.0.1";
 constexpr int DEFAULT_PORT = 8080;
 constexpr bool DEFAULT_BLOCK = true;
 constexpr int DEFAULT_BACKLOG = 1024;
+constexpr bool DEFAULT_REUSEADDR = true;
 
 class TinyHttpServer
 {
@@ -56,6 +57,7 @@ private:
     int port;
     bool block;
     int backlog;
+    bool reuseaddr;
     int fd;
     struct sockaddr_in server_addr{};
 };
