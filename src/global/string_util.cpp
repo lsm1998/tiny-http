@@ -12,11 +12,10 @@ std::vector<std::string> split(const std::string &str, const std::string &delimi
     size_t found;
     int count = 1;
 
-    while ((found = str.find(delimiter, pos)) != std::string::npos && (n == -1 || count < n))
+    while ((found = str.find(delimiter, pos)) != std::string::npos && (n == -1 || count++ < n))
     {
         tokens.push_back(str.substr(pos, found - pos));
         pos = found + delimiter.size();
-        count++;
     }
 
     tokens.push_back(str.substr(pos));
@@ -31,10 +30,9 @@ std::vector<std::string> split(const std::string &str, char token, int n)
     int count = 0;
 
     std::string tokenizedPart;
-    while (getline(iss, tokenizedPart, token) && (n == -1 || count < n))
+    while (getline(iss, tokenizedPart, token) && (n == -1 || count++ < n))
     {
         tokens.push_back(tokenizedPart);
-        count++;
     }
     return tokens;
 }
