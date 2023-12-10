@@ -11,7 +11,7 @@ void demoHandler(const HttpRequest &request, HttpResponse &response)
     auto name = request.query("name");
     response.setStatusCode(200);
 
-    response.setHeader("Content-Type", "");
+    response.setHeader("Content-Type", "application/json");
 
     auto jsonStr = R"({"name" : "lsm" })";
     response.write(jsonStr, strlen(jsonStr));

@@ -8,11 +8,6 @@
 #include "global.h"
 #include <map>
 
-// 101: "Protocols",
-constexpr const char *VERSION = "HTTP/1.1";
-
-constexpr const char *BLANK = " ";
-
 extern const std::map<int, std::string> CODE_MAP;
 
 class HttpResponse

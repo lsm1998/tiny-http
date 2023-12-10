@@ -22,12 +22,11 @@ void HttpResponse::done() const
     // 先写状态行
     this->writeRespLine();
 
-
     // 先写响应头
     this->writeRespHeader();
 
-    this->writeRespBody();
     // 写响应体
+    this->writeRespBody();
 }
 
 void HttpResponse::setHeader(const std::string &key, const std::string &value)
@@ -59,6 +58,7 @@ void HttpResponse::writeRespLine() const
     ::write(this->fd, code.c_str(), code.size());
     ::write(this->fd, BLANK, strlen(BLANK));
     ::write(this->fd, desc.c_str(), desc.size());
+    ::write(this->fd, SEPARATOR, 2);
 }
 
 void HttpResponse::writeRespHeader() const
@@ -74,7 +74,7 @@ void HttpResponse::writeRespBody() const
     auto data = this->buf.str();
     this->writeWithKV("Content-Length", std::to_string(data.size()));
 
-    ::write(this->fd, "\r\n", 2);
+    ::write(this->fd, SEPARATOR, 2);
 
     if (data.empty())
     {
@@ -86,7 +86,8 @@ void HttpResponse::writeRespBody() const
 void HttpResponse::writeWithKV(const std::string &key, const std::string &value) const
 {
     ::write(this->fd, key.data(), key.size());
-    ::write(this->fd, ": ", 2);
+    ::write(this->fd, COLON, 1);
+    ::write(this->fd, BLANK, 1);
     ::write(this->fd, value.data(), value.size());
-    ::write(this->fd, "\r\n", 2);
+    ::write(this->fd, SEPARATOR, 2);
 }
