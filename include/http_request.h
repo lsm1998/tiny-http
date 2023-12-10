@@ -20,11 +20,17 @@ class HttpRequest
 public:
     explicit HttpRequest(int fd);
 
-    ~HttpRequest();
+    ~HttpRequest() = default;
 
-    HttpRequest(const HttpRequest &request);
+    HttpRequest(const HttpRequest &request) = delete;
 
-    void setParam(const String& name,const String& value);
+    /**
+     * 暴露给路由设置Param参数的函数
+     *
+     * @param name
+     * @param value
+     */
+    void setParam(const String &name, const String &value);
 
     [[nodiscard]] String path() const;
 
@@ -46,6 +52,12 @@ public:
 
     [[nodiscard]] String param(const String &name) const;
 
+    size_t readBody(char *buf, size_t len) const;
+
+    [[nodiscard]] int contentLength() const;
+
+    [[nodiscard]] String contentType() const;
+
 private:
     void parseRequestLine();
 
@@ -54,30 +66,40 @@ private:
     void parseQuery();
 
 private:
+    // 请求是否有效
     bool _invalid{};
 
+    // 请求体是否可读
+    mutable bool bodyReady{};
+
+    // 请求方法
     String _method{};
 
+    // 请求路径
     String _path{};
 
+    // 协议
     String _protocol{};
 
+    // 版本
     String _version{};
 
-    char *body{};
-
-    int length{};
-
+    // 请求头
     HttpHeader _header{};
 
+    // query参数
     FormData _query{};
 
+    // form参数
     FormData form{};
 
+    // param参数
     std::map<String, String> params;
 
+    // 文件描述符
     int fd{};
 
+    // query row数据
     String queryRow;
 };
 

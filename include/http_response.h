@@ -17,6 +17,8 @@ public:
 
     ~HttpResponse();
 
+    HttpResponse(const HttpResponse& response) = delete;
+
     void setHeader(const std::string &key, const std::string &value);
 
     void write(const char *data, size_t len);

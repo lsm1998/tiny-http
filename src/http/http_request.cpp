@@ -14,24 +14,10 @@ HttpRequest::HttpRequest(int fd)
     // 解析请求头
     this->parseRequestHeader();
 
-    // 解析空行
-    // this->parseBlankRow();
-}
-
-HttpRequest::~HttpRequest()
-{
-    if (this->body)
+    // 是否有数据可读
+    if (this->contentLength() > 0)
     {
-        delete[] this->body;
-    }
-}
-
-HttpRequest::HttpRequest(const HttpRequest &request)
-{
-    if (request.body && request.length > 0)
-    {
-        this->body = new char[request.length];
-        memcpy(this->body, request.body, request.length);
+        this->bodyReady = true;
     }
 }
 
@@ -51,7 +37,7 @@ void HttpRequest::parseRequestLine()
         return;
     }
     // 删除\r\n
-    buf[len - 1] = '\0';
+    buf[len - 2] = '\0';
     auto list = split(buf, ' ');
     if (list.size() != 3)
     {
@@ -114,7 +100,7 @@ void HttpRequest::parseRequestHeader()
             break;
         }
         // 删除\r\n
-        buf[len - 1] = '\0';
+        buf[len - 2] = '\0';
         auto list = split(buf, ": ", 2);
         if (list.size() != 2)
         {
@@ -203,4 +189,34 @@ HttpRequest::String HttpRequest::param(const HttpRequest::String &name) const
 void HttpRequest::setParam(const HttpRequest::String &name, const HttpRequest::String &value)
 {
     this->params[name] = value;
+}
+
+size_t HttpRequest::readBody(char *buf, size_t len) const
+{
+    if (!bodyReady)
+    {
+        return EOF;
+    }
+    bodyReady = false; // 不允许读多次
+    return ::read(this->fd, buf, len);
+}
+
+HttpRequest::String HttpRequest::contentType() const
+{
+    auto item = this->_header.find("Content-Type");
+    if (item == this->_header.end() || item->second.at(0).empty())
+    {
+        return "";
+    }
+    return item->second.at(0);
+}
+
+int HttpRequest::contentLength() const
+{
+    auto item = this->_header.find("Content-Length");
+    if (item == this->_header.end() || item->second.at(0).empty())
+    {
+        return 0;
+    }
+    return std::stoi(item->second.at(0));
 }

@@ -28,6 +28,31 @@ void init(TinyHttpServer &server)
     {
         response.setStatusCode(500);
     });
+
+    server.addRoute("POST", "submit", [](const HttpRequest &request, HttpResponse &response)
+    {
+        int len = request.contentLength();
+        if (request.contentType() != "application/json" || len == 0)
+        {
+            response.setStatusCode(500);
+            return;
+        }
+        char *data = new char[len];
+
+        size_t t = request.readBody(data, len);
+        if (t <= 0)
+        {
+            response.setStatusCode(500);
+            return;
+        }
+        data[t] = '\0';
+
+        std::cout << "收到数据" << std::endl;
+        std::cout << data << std::endl;
+
+        response.setHeader("Content-Type", "application/json");
+        response.write(data, t);
+    });
 }
 
 int main()
