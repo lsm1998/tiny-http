@@ -3,26 +3,26 @@
 //
 
 #include "handler.h"
-#include "http_response.h"
-#include "http_request.h"
 
-void demoHandler(const HttpRequest &request, HttpResponse &response)
-{
-    auto name = request.query("name");
-    response.setStatusCode(200);
-
-    response.setHeader("Content-Type", "application/json");
-
-    auto jsonStr = R"({"name" : "lsm" })";
-    response.write(jsonStr, strlen(jsonStr));
-}
-
-void routMatch(const HttpRequest &request, int fd)
+void routeDispatch(HttpRequest &request, int fd, Router *router)
 {
     HttpResponse response(fd);
-    if (request.path() == "/demo")
+
+    auto node = router->getRoute(request.method(), request.path());
+    if (node.first == nullptr)
     {
-        demoHandler(request, response);
+        response.setStatusCode(404);
+        return;
+    }
+    for (const auto &param: node.second)
+    {
+        request.setParam(param.first, param.second);
+    }
+
+    auto handler = router->getHandler(request.method(), node.first->getPattern());
+    if (handler != nullptr)
+    {
+        handler(request, response);
     }
 }
 
@@ -38,7 +38,7 @@ void *handler(void *args)
         goto end;
     }
 
-    routMatch(request, clientArgs->fd);
+    routeDispatch(request, clientArgs->fd, clientArgs->router);
 
     end:
     delete clientArgs;

@@ -6,6 +6,8 @@
 #include "tcp_net_util.h"
 #include "handler.h"
 
+std::vector<std::string> METHOD_LIST = {"GET", "POST", "DELETE", "PUT"};
+
 void TinyHttpServer::run()
 {
     // socket
@@ -82,7 +84,7 @@ void TinyHttpServer::accept() const
         throw std::runtime_error("netSetBlock fail");
     }
     std::cout << "start http server on " << this->host << ":" << this->port << "..." << std::endl;
-    while (true)
+    while (this->loop)
     {
         struct sockaddr_in client_addr{};
         socklen_t len = sizeof(client_addr);
@@ -96,11 +98,48 @@ void TinyHttpServer::accept() const
         auto *args = new ClientArgs;
         args->fd = client_fd;
         args->client_addr = client_addr;
+        args->router = this->router;
         int ret = pthread_create(&pt, nullptr, handler, (void *) (args));
         if (ret < 0)
         {
             throw std::runtime_error("pthread_create fail");
         }
         pthread_detach(pt);
+    }
+}
+
+TinyHttpServer::~TinyHttpServer()
+{
+    this->loop = false;
+    delete this->router;
+    close(this->fd);
+}
+
+void TinyHttpServer::addRoute(const std::string &path, const RouteHandler &handler)
+{
+    for (auto &method: METHOD_LIST)
+    {
+        this->addRoute(method, path, handler);
+    }
+}
+
+void TinyHttpServer::setStaticDir(const std::string &dir)
+{
+    this->staticDir = dir;
+}
+
+void TinyHttpServer::addRoute(const std::string &method, const std::string &path, const RouteHandler &handler)
+{
+    if (std::find(METHOD_LIST.begin(), METHOD_LIST.end(), method)->empty())
+    {
+        throw std::runtime_error("unsupported request method");
+    }
+
+    if (!path.empty() && path.at(0) == '/')
+    {
+        this->router->addRoute(method, path, handler);
+    } else
+    {
+        this->router->addRoute(method, "/" + path, handler);
     }
 }

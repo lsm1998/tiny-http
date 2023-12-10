@@ -4,3 +4,11 @@ Accept: application/json
 ###
 GET http://127.0.0.1:9999/demo?name=1235_b
 Accept: application/json
+
+###
+GET http://127.0.0.1:9999/test500
+Accept: application/json
+
+###
+GET http://127.0.0.1:9999/find/100
+Accept: application/json

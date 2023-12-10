@@ -24,6 +24,8 @@ public:
 
     HttpRequest(const HttpRequest &request);
 
+    void setParam(const String& name,const String& value);
+
     [[nodiscard]] String path() const;
 
     [[nodiscard]] String method() const;
@@ -41,6 +43,8 @@ public:
     [[nodiscard]] std::vector<String> query(const String &key) const;
 
     [[nodiscard]] FormData queryMap() const;
+
+    [[nodiscard]] String param(const String &name) const;
 
 private:
     void parseRequestLine();
@@ -69,6 +73,8 @@ private:
     FormData _query{};
 
     FormData form{};
+
+    std::map<String, String> params;
 
     int fd{};
 

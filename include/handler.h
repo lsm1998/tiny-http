@@ -6,12 +6,17 @@
 #define TINY_HTTP_HANDLER_H
 
 #include <netinet/in.h>
+#include <functional>
+#include "http_response.h"
+#include "http_request.h"
+#include "route.h"
 
 class ClientArgs
 {
 public:
     int fd{};
     struct sockaddr_in client_addr{};
+    Router* router{};
 
     ~ClientArgs();
 };

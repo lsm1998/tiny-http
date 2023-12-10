@@ -195,3 +195,12 @@ HttpRequest::FormData HttpRequest::queryMap() const
     return this->_query;
 }
 
+HttpRequest::String HttpRequest::param(const HttpRequest::String &name) const
+{
+    return this->params.find(name)->second;
+}
+
+void HttpRequest::setParam(const HttpRequest::String &name, const HttpRequest::String &value)
+{
+    this->params[name] = value;
+}
