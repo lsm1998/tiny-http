@@ -7,6 +7,8 @@
 
 #include "global.h"
 #include "route.h"
+#include "tcp_net_util.h"
+#include "handler.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
