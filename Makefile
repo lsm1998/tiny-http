@@ -1,20 +1,23 @@
-CC := gcc
+CC := g++
 
-INCLUDE_DIR := -I ../include/
+INCLUDE_DIR := -I $(shell pwd)/include/
 
 OBJ_DIR := $(shell pwd)/obj
 BIN_DIR := $(shell pwd)/bin
-SUB_DIR := main fun global obj
 
-TARGET := main_exec
+STD := c++17
+
+TARGET := tiny_http
+
+SUBDIRS := src obj
 
 # 设置变量导出为全局变量，子Makefile可以访问
-export CC INCLUDE_DIR OBJ_DIR BIN_DIR SUB_DIR TARGET
+export CC INCLUDE_DIR OBJ_DIR BIN_DIR TARGET STD
 
-all: $(SUB_DIR)
+all: $(SUBDIRS)
 
-$(SUB_DIR): MK_BIN
-	make -C $@
+$(SUBDIRS): MK_BIN
+	$(MAKE) -C $@
 
 MK_BIN:
 	mkdir -p ./bin
