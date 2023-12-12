@@ -7,7 +7,7 @@
     "cc": "g++",
     "cxx_flags": " -std=c++17 -Wall -Wextra",
     "ld_flags": "-pthread",
-    "target": "tiny_http",
+    "target": "tiny-http",
     "include": [
       "./include"
     ],
