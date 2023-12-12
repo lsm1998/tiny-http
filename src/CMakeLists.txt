@@ -5,4 +5,6 @@ file(GLOB ROUTE_SOURCE_FILES "route/*.cpp")
 
 add_executable(${PROJECT_NAME} main.cpp example/example.cpp ${HTTP_SOURCE_FILES} ${CORE_SOURCE_FILES} ${GLOBAL_SOURCE_FILES} ${ROUTE_SOURCE_FILES})
 
+target_link_libraries(${PROJECT_NAME} pthread)
+
 add_subdirectory(tests)
