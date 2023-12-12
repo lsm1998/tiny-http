@@ -1,2 +1,2 @@
 $(BIN_DIR)/$(TARGET) : *.o
-	$(CC) $(INCLUDE_DIR) $^ -o $@
+	$(CC) -std=$(STD) ${LD_FLAGS} $(INCLUDE_DIR) $^ -o $@
