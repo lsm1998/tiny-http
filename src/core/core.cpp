@@ -97,6 +97,7 @@ void TinyHttpServer::accept() const
         args->fd = client_fd;
         args->client_addr = client_addr;
         args->router = this->router;
+        args->staticDir = this->staticDir;
         int ret = pthread_create(&pt, nullptr, handler, (void *) (args));
         if (ret < 0)
         {
@@ -124,6 +125,10 @@ void TinyHttpServer::addRoute(const std::string &path, const RouteHandler &handl
 void TinyHttpServer::setStaticDir(const std::string &dir)
 {
     this->staticDir = dir;
+    if (!dir.empty() && dir.at(0) == '/')
+    {
+        this->staticDir = dir.substr(1);
+    }
 }
 
 void TinyHttpServer::addRoute(const std::string &method, const std::string &path, const RouteHandler &handler)

@@ -3,6 +3,7 @@
 //
 
 #include "http_response.h"
+#include <sys/sendfile.h>
 
 const std::map<int, std::string> CODE_MAP = {
         {101, "Protocols"},
@@ -19,6 +20,10 @@ HttpResponse::HttpResponse(int fd)
 
 void HttpResponse::done() const
 {
+    if (this->_isDone)
+    {
+        return;
+    }
     // 先写状态行
     this->writeRespLine();
 
@@ -90,4 +95,37 @@ void HttpResponse::writeWithKV(const std::string &key, const std::string &value)
     ::write(this->fd, BLANK, 1);
     ::write(this->fd, value.data(), value.size());
     ::write(this->fd, SEPARATOR, 2);
+}
+
+off_t HttpResponse::sendfile(const std::string &contentType, int file_fd, size_t count)
+{
+    std::cout << "start sendfile" << std::endl;
+    // 发送响应头
+    if (!contentType.empty())
+    {
+        this->setHeader("Content-Type", contentType);
+    }
+    this->setHeader("Content-Length", std::to_string(count));
+
+    // 先写状态行
+    this->writeRespLine();
+
+    // 先写响应头
+    this->writeRespHeader();
+
+    // 空行
+    ::write(this->fd, SEPARATOR, 2);
+
+    off_t len{};
+#ifdef __APPLE__
+    if (::sendfile(file_fd, this->fd, 0, &len, nullptr, 0) <0)
+#elif __linux__
+    if (::sendfile(this->fd, file_fd, &len, count) < 0)
+#endif
+    {
+        perror("sendfile error");
+    }
+    this->_isDone = true;
+    std::cout << "end sendfile" << std::endl;
+    return len;
 }

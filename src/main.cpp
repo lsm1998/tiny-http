@@ -15,6 +15,10 @@ int main(int argc, char *argv[])
     {
         server.setPort(std::stoi(argv[2]));
     }
+    if (argc > 3)
+    {
+        server.setStaticDir(argv[3]);
+    }
     init(server);
     server.run();
     return 0;

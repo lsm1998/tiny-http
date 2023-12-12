@@ -8,6 +8,8 @@
 #include <typeindex>
 #include "global.h"
 
+extern std::map<std::string,std::string> CONTENT_TYPE_MAP;
+
 extern std::vector<std::string> split(const std::string &str, const std::string &delimiter, int n = -1);
 
 extern std::vector<std::string> split(const std::string &str, char token, int n = -1);
@@ -24,5 +26,7 @@ std::string toString(const T &val)
         return "Type: " + std::string(typeid(val).name());
     }
 }
+
+extern std::string eductionContentType(const std::string &path);
 
 #endif //TINY_HTTP_STRING_UTIL_H

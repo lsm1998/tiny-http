@@ -17,6 +17,7 @@ public:
     int fd{};
     struct sockaddr_in client_addr{};
     Router* router{};
+    std::string staticDir{};
 
     ~ClientArgs();
 };

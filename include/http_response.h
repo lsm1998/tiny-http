@@ -17,13 +17,15 @@ public:
 
     ~HttpResponse();
 
-    HttpResponse(const HttpResponse& response) = delete;
+    HttpResponse(const HttpResponse &response) = delete;
 
     void setHeader(const std::string &key, const std::string &value);
 
     void write(const char *data, size_t len);
 
     void setStatusCode(int code);
+
+    off_t sendfile(const std::string &contentType, int file_fd, size_t count);
 
 private:
     void writeWithKV(const std::string &key, const std::string &value) const;
@@ -40,6 +42,8 @@ private:
     int fd{};
 
     int _code{200};
+
+    bool _isDone{false};
 
     std::stringstream buf{};
 

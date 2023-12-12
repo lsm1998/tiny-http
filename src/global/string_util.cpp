@@ -4,6 +4,28 @@
 
 #include "string_util.h"
 
+std::map<std::string, std::string> CONTENT_TYPE_MAP = {
+        {"txt",  "text/plain"},
+        {"html", "text/html"},
+        {"htm",  "text/html"},
+        {"css",  "text/css"},
+        {"js",   "application/javascript"},
+        {"json", "application/json"},
+        {"jpg",  "image/jpeg"},
+        {"jpeg", "image/jpeg"},
+        {"png",  "image/png"},
+        {"gif",  "image/gif"},
+        {"ico",  "image/x-icon"},
+        {"mp3",  "audio/mp3"},
+        {"mp4",  "video/mpeg4"},
+        {"mpeg", "video/mpeg"},
+        {"pdf",  "application/pdf"},
+        {"doc",  "application/msword"},
+        {"xls",  "application/vnd.ms-excel"},
+        {"ppt",  "application/vnd.ms-powerpoint"},
+        {"xml",  "text/xml"},
+};
+
 std::vector<std::string> split(const std::string &str, const std::string &delimiter, int n)
 {
     std::vector<std::string> tokens;
@@ -55,4 +77,16 @@ std::string toString(const std::vector<std::string> &val)
     result.pop_back();
     result.append("]");
     return result;
+}
+
+std::string eductionContentType(const std::string &path)
+{
+    size_t pos = path.find_last_of('.');
+    std::map<std::string, std::string>::iterator iter;
+    if (pos == std::string::npos ||
+        (iter = CONTENT_TYPE_MAP.find(path.substr(pos + 1))) == CONTENT_TYPE_MAP.end())
+    {
+        return "application/octet-stream";
+    }
+    return iter->second;
 }
