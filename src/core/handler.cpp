@@ -37,7 +37,7 @@ void routeDispatch(HttpRequest &request, const int &fd, Router *router, const st
     HttpResponse response(fd);
 
     auto node = router->getRoute(request.method(), request.path());
-    size_t isStatic = false;
+    bool isStatic = false;
     if (node.first == nullptr && !(isStatic = staticDispatch(request, fd, staticDir, response)))
     {
         response.setStatusCode(404);
