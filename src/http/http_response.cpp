@@ -99,7 +99,6 @@ void HttpResponse::writeWithKV(const std::string &key, const std::string &value)
 
 off_t HttpResponse::sendfile(const std::string &contentType, int file_fd, size_t count)
 {
-    std::cout << "start sendfile" << std::endl;
     // 发送响应头
     if (!contentType.empty())
     {
@@ -126,6 +125,10 @@ off_t HttpResponse::sendfile(const std::string &contentType, int file_fd, size_t
         perror("sendfile error");
     }
     this->_isDone = true;
-    std::cout << "end sendfile" << std::endl;
     return len;
+}
+
+int HttpResponse::getStatusCode() const
+{
+    return this->_code;
 }

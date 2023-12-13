@@ -27,6 +27,8 @@ public:
 
     off_t sendfile(const std::string &contentType, int file_fd, size_t count);
 
+    int getStatusCode() const;
+
 private:
     void writeWithKV(const std::string &key, const std::string &value) const;
 

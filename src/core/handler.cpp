@@ -56,6 +56,7 @@ void routeDispatch(HttpRequest &request, const int &fd, Router *router, const st
     {
         handler(request, response);
     }
+    std::cout << request.method() << " " << request.path() << " " << response.getStatusCode() << std::endl;
 }
 
 // 线程的运行函数
