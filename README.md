@@ -18,7 +18,7 @@ make
 ````
 ![cmake编译.png](doc/cmake编译.png)
 
-注意此时编译出来的可执行文件在`src`目录下
+注意此时编译出来的可执行文件在`bin`目录下
 
 #### 使用Nodejs编译
 
