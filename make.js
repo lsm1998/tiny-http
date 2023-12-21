@@ -23,6 +23,7 @@ const processMakeArgs = (makeArgs) => {
     makeArgs.output = makeArgs.output || 'obj';
     makeArgs.cc = makeArgs.cc || 'gcc';
     makeArgs.include = makeArgs.include || ['./'];
+    makeArgs.targetDir = makeArgs.targetDir || './';
     return makeArgs;
 }
 
@@ -49,7 +50,7 @@ const build = (makeArgs) => {
             })));
     });
 
-    const {output, target, cc, include} = makeArgs;
+    const {output, target, cc, include, targetDir} = makeArgs;
 
     fs.mkdirSync(path.join(__dirname, output), {recursive: true});
     const cmd_s = []
@@ -82,7 +83,7 @@ const build = (makeArgs) => {
     });
 
     // 生成链接命令
-    cmd_s.push('-o ' + path.join(__dirname, target));
+    cmd_s.push('-o ' + path.join(__dirname, targetDir, target));
     const linkCmd = cmd_s.join(' ');
     console.log(linkCmd);
     const ret = execSync(linkCmd);

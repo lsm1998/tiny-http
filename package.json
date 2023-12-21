@@ -8,6 +8,7 @@
     "cxx_flags": " -std=c++17 -Wall -Wextra",
     "ld_flags": "-pthread",
     "target": "tiny-http",
+    "targetDir": "./bin",
     "include": [
       "./include"
     ],
