@@ -49,7 +49,7 @@ make
 
 ````shell
 # 命令格式 ./tiny_http $(host) $(port) $(static_dir) 
-./tiny_http 127.0.0.1 8080 html
+./tiny_http 127.0.0.1 8888 html
 ````
 
 ![运行.png](doc/运行.png)
